@@ -19,6 +19,7 @@
         - git
         - curl
         - fzf
+        - direnv
     ## dotfiles
     - name: Fetch dotfiles installer
       ansible.builtin.uri:
