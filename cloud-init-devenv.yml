@@ -1,0 +1,32 @@
+---
+- name: Setup development environment
+  hosts: localhost
+  connection: local
+  tasks:
+    ## apt
+    - name: Update repository cache
+      become: true
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+    - name: Install packages
+      become: true
+      apt:
+        name:
+          - "{{ item }}"
+        state: latest
+      loop:
+        - git
+        - curl
+        - fzf
+    ## dotfiles
+    - name: Fetch dotfiles installer
+      ansible.builtin.uri:
+        url: https://raw.githubusercontent.com/peg7/dotfiles/main/.bin/install.sh
+        return_content: yes
+      register: dotfiles_installer
+    - name: Run dotfiles installer
+      ansible.builtin.shell:
+        cmd: /bin/bash
+        stdin: "{{ dotfiles_installer.content }}"
+    ## starship
